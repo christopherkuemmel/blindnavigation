@@ -194,11 +194,6 @@ class _ObjectDetectionState extends State<ObjectDetection> {
           Stack(children: renderBoxes(size)),
         ],
       ),
-//      floatingActionButton: FloatingActionButton(
-//        onPressed: getImage,
-//        tooltip: 'Pick Image',
-//        child: Icon(Icons.camera_alt),
-//      ),
     );
   }
 }
