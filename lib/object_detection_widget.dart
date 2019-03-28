@@ -178,9 +178,12 @@ class _ObjectDetectionState extends State<ObjectDetection> {
     });
     loadModel();
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Object Recognition'),
-      ),
+      appBar: AppBar(title: const Text('Object Recognition'), actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.camera_alt),
+          onPressed: getImage,
+        ),
+      ]),
       body: Stack(
         children: <Widget>[
           Container(
@@ -191,11 +194,11 @@ class _ObjectDetectionState extends State<ObjectDetection> {
           Stack(children: renderBoxes(size)),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: getImage,
-        tooltip: 'Pick Image',
-        child: Icon(Icons.camera_alt),
-      ),
+//      floatingActionButton: FloatingActionButton(
+//        onPressed: getImage,
+//        tooltip: 'Pick Image',
+//        child: Icon(Icons.camera_alt),
+//      ),
     );
   }
 }
