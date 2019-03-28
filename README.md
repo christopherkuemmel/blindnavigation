@@ -1,6 +1,6 @@
 # tflite_app
 
-This project only contains a sample project with the flite plugin for now.
+This project only contains a sample project with the tflite plugin for now.
 
 ## Getting Started
 
