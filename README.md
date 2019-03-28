@@ -1,6 +1,6 @@
-# testapp
+# tflite_app
 
-A new Flutter project.
+This project only contains a sample project with the flite plugin for now.
 
 ## Getting Started
 
