@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'object_detection_widget.dart';
 import 'placeholder_widget.dart';
 
 class Home extends StatefulWidget {
