@@ -7,7 +7,6 @@ import 'camera.dart';
 import 'bounding_box.dart';
 
 const String ssd = "SSD MobileNet";
-const String yolo = "Tiny YOLOv2";
 
 class CameraStream extends StatefulWidget {
 
@@ -66,27 +65,11 @@ class _CameraStreamState extends State<CameraStream> {
   Widget build(BuildContext context) {
     Size screen = MediaQuery.of(context).size;
     return Scaffold(
-      body: _model == ""
-          ? Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            RaisedButton(
-              child: const Text(ssd),
-              onPressed: () => onSelect(ssd),
-            ),
-            RaisedButton(
-              child: const Text(yolo),
-              onPressed: () => onSelect(yolo),
-            ),
-          ],
-        ),
-      )
-          : Stack(
+      body: Stack(
         children: [
           Camera(
             widget.cameras,
-            _model,
+            ssd,
             setRecognitions,
           ),
           BoundingBox(
