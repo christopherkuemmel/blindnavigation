@@ -42,9 +42,15 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Object Detection'),
-      ),
+      appBar: AppBar(title: Text('Object Detection'), actions: <Widget>[
+        // action button
+        IconButton(
+          icon: new Icon(Icons.settings),
+          onPressed: () {
+            // Navigator go to Route Setting
+          },
+        ),
+      ]),
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: onTabTapped,
