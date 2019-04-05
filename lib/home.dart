@@ -1,8 +1,15 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'placeholder_widget.dart';
-import 'camera_stream_widget.dart';
+import 'placeholder.dart';
+import 'camera_stream.dart';
+
+
 
 class Home extends StatefulWidget {
+
+  final List<CameraDescription> cameras;
+  Home(this.cameras);
+
   @override
   State<StatefulWidget> createState() {
     return _HomeState();
@@ -12,7 +19,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _currentIndex = 0;
   final List<Widget> _children = [
-    CameraStream(),
+    CameraStream(widget.cameras),
     PlaceholderWidget(Colors.green),
   ];
 

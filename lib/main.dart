@@ -1,14 +1,26 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'home_widget.dart';
+import 'package:camera/camera.dart';
+import 'home.dart';
 
-void main() => runApp(App());
+List<CameraDescription> cameras;
+
+Future<Null> main() async {
+  try {
+    cameras = await availableCameras();
+  } on CameraException catch (e) {
+    print('Error: $e.code\nError Message: $e.message');
+  }
+  runApp(new App());
+}
+
 
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.dark(),
-      home: Home(),
+      home: Home(cameras),
     );
   }
 }
