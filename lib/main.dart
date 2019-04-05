@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'placeholder.dart';
 import 'camera_stream.dart';
+import 'settings.dart';
 
 List<CameraDescription> cameras;
 
@@ -21,6 +22,9 @@ class App extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData.dark(),
       home: Home(),
+      routes: <String, WidgetBuilder>{
+        '/settings': (BuildContext context) => new Settings(),
+      },
     );
   }
 }
@@ -47,7 +51,7 @@ class _HomeState extends State<Home> {
         IconButton(
           icon: new Icon(Icons.settings),
           onPressed: () {
-            // Navigator go to Route Setting
+            Navigator.of(context).pushNamed('/settings');
           },
         ),
       ]),
