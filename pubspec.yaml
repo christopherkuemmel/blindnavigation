@@ -23,6 +23,7 @@ dependencies:
   tflite: ^1.0.1
   image: ^2.0.7
   camera: ^0.4.3+2
+  shared_preferences: ^0.5.1+2
 
 dev_dependencies:
   flutter_test:
