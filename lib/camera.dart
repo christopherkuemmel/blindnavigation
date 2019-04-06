@@ -4,16 +4,14 @@ import 'package:tflite/tflite.dart';
 import 'dart:math' as math;
 
 const String ssd = "SSD MobileNet";
-const String yolo = "Tiny YOLOv2";
 
 typedef void Callback(List<dynamic> list, int h, int w);
 
 class Camera extends StatefulWidget {
   final List<CameraDescription> cameras;
   final Callback setRecognitions;
-  final String model;
 
-  Camera(this.cameras, this.model, this.setRecognitions);
+  Camera(this.cameras, this.setRecognitions);
 
   @override
   _CameraState createState() => new _CameraState();
@@ -50,18 +48,18 @@ class _CameraState extends State<Camera> {
               bytesList: img.planes.map((plane) {
                 return plane.bytes;
               }).toList(),
-              model: widget.model == yolo ? "YOLO" : "SSDMobileNet",
+              model: "SSDMobileNet",
               imageHeight: img.height,
               imageWidth: img.width,
-              imageMean: widget.model == yolo ? 0 : 127.5,
-              imageStd: widget.model == yolo ? 255.0 : 127.5,
+              imageMean: 127.5,
+              imageStd: 127.5,
               numResultsPerClass: 1,
-              threshold: widget.model == yolo ? 0.2 : 0.4,
+              threshold: 0.4,
             ).then((recognitions) {
               // print(recognitions);
 
               int endTime = new DateTime.now().millisecondsSinceEpoch;
-              print("Detection took ${endTime - startTime}");
+              print("Detection took ${endTime - startTime} ms");
 
               widget.setRecognitions(recognitions, img.height, img.width);
 

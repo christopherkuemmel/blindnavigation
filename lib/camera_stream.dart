@@ -6,8 +6,6 @@ import 'dart:math' as math;
 import 'camera.dart';
 import 'bounding_box.dart';
 
-const String ssd = "SSD MobileNet";
-
 class CameraStream extends StatefulWidget {
 
   final List<CameraDescription> cameras;
@@ -21,7 +19,6 @@ class _CameraStreamState extends State<CameraStream> {
   List<dynamic> _recognitions;
   int _imageHeight = 0;
   int _imageWidth = 0;
-  String _model = "";
 
   @override
   void initState() {
@@ -29,28 +26,10 @@ class _CameraStreamState extends State<CameraStream> {
   }
 
   loadModel() async {
-    String res;
-    switch (_model) {
-      case yolo:
-        res = await Tflite.loadModel(
-          model: "assets/yolov2_tiny.tflite",
-          labels: "assets/yolov2_tiny.txt",
-        );
-        break;
-      default:
-        res = await Tflite.loadModel(
-            model: "assets/ssd_mobilenet.tflite",
-            labels: "assets/ssd_mobilenet.txt");
-        break;
-    }
+    String res = await Tflite.loadModel(
+        model: "assets/ssd_mobilenet.tflite",
+        labels: "assets/ssd_mobilenet.txt");
     print(res);
-  }
-
-  onSelect(model) {
-    setState(() {
-      _model = model;
-    });
-    loadModel();
   }
 
   setRecognitions(recognitions, imageHeight, imageWidth) {
@@ -69,7 +48,6 @@ class _CameraStreamState extends State<CameraStream> {
         children: [
           Camera(
             widget.cameras,
-            ssd,
             setRecognitions,
           ),
           BoundingBox(
