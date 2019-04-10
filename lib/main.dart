@@ -1,8 +1,9 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
+
 import 'package:camera/camera.dart';
-import 'placeholder.dart';
-import 'camera_stream.dart';
+import 'package:flutter/material.dart';
+import 'package:testapp/home.dart';
+
 import 'settings.dart';
 
 List<CameraDescription> cameras;
@@ -13,69 +14,24 @@ Future<Null> main() async {
   } on CameraException catch (e) {
     print('Error: $e.code\nError Message: $e.message');
   }
-  runApp(new App());
+  runApp(App(cameras: cameras));
 }
 
 class App extends StatelessWidget {
+
+  final List<CameraDescription> cameras;
+
+  const App({Key key, @required this.cameras}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.dark(),
-      home: Home(),
+      home: Home(cameras: cameras),
       routes: <String, WidgetBuilder>{
-        '/settings': (BuildContext context) => new Settings(),
+        '/settings': (BuildContext context) => Settings(),
       },
     );
   }
 }
 
-class Home extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return _HomeState();
-  }
-}
-
-class _HomeState extends State<Home> {
-  int _currentIndex = 0;
-  final List<Widget> _children = [
-    CameraStream(cameras),
-    PlaceholderWidget(Colors.green),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Object Detection'), actions: <Widget>[
-        // action button
-        IconButton(
-          icon: new Icon(Icons.settings),
-          onPressed: () {
-            Navigator.of(context).pushNamed('/settings');
-          },
-        ),
-      ]),
-      body: _children[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: onTabTapped,
-        currentIndex: _currentIndex,
-        items: [
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.camera_alt),
-            title: new Text('Camera'),
-          ),
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.videocam),
-            title: new Text('Video'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
-}
