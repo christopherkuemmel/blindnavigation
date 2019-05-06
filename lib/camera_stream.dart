@@ -43,6 +43,7 @@ class _CameraStreamState extends State<CameraStream> {
   @override
   Widget build(BuildContext context) {
     Size screen = MediaQuery.of(context).size;
+    loadModel();
     return Scaffold(
       body: Stack(
         children: [
