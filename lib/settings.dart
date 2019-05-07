@@ -9,7 +9,7 @@ class _SettingsState extends State {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: Text ('Settings'),
+        title: Text('Settings'),
       ),
       body: new Container(
           padding: new EdgeInsets.all(32.0),

@@ -54,7 +54,7 @@ class _CameraState extends State<Camera> {
               numResultsPerClass: 1,
               threshold: 0.4,
             ).then((recognitions) {
-              // print(recognitions);
+              print(recognitions);
 
               int endTime = new DateTime.now().millisecondsSinceEpoch;
               print("Detection took ${endTime - startTime} ms");
@@ -92,9 +92,9 @@ class _CameraState extends State<Camera> {
 
     return OverflowBox(
       maxHeight:
-      screenRatio > previewRatio ? screenH : screenW / previewW * previewH,
+          screenRatio > previewRatio ? screenH : screenW / previewW * previewH,
       maxWidth:
-      screenRatio > previewRatio ? screenH / previewH * previewW : screenW,
+          screenRatio > previewRatio ? screenH / previewH * previewW : screenW,
       child: CameraPreview(controller),
     );
   }

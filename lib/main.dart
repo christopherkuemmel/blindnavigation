@@ -18,7 +18,6 @@ Future<Null> main() async {
 }
 
 class App extends StatelessWidget {
-
   final List<CameraDescription> cameras;
 
   const App({Key key, @required this.cameras}) : super(key: key);
@@ -34,4 +33,3 @@ class App extends StatelessWidget {
     );
   }
 }
-
