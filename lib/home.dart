@@ -37,6 +37,12 @@ class _HomeState extends State<Home> {
             Navigator.of(context).pushNamed('/settings');
           },
         ),
+        IconButton(
+          icon: Icon(Icons.bluetooth),
+          onPressed: () {
+            Navigator.of(context).pushNamed('/bluetooth');
+          },
+        ),
       ]),
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
