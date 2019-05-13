@@ -25,6 +25,8 @@ dependencies:
   camera: ^0.4.3+2
   shared_preferences: ^0.5.1+2
 
+  flutter_bluetooth_serial: ^0.0.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
