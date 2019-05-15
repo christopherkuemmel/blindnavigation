@@ -2,10 +2,11 @@ import 'dart:async';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:testapp/bluetooth/bluetooth.dart';
 import 'package:testapp/home.dart';
 
 import 'settings.dart';
-import 'bluetooth.dart';
+// import 'bluetooth.dart';
 
 List<CameraDescription> cameras;
 
@@ -30,7 +31,7 @@ class App extends StatelessWidget {
       home: Home(cameras: cameras),
       routes: <String, WidgetBuilder>{
         '/settings': (BuildContext context) => Settings(),
-        '/bluetooth': (BuildContext context) => BluetoothApp(),
+        '/bluetooth': (BuildContext context) => Bluetooth(),
       },
     );
   }

@@ -26,6 +26,9 @@ class _HomeState extends State<Home> {
           PlaceholderWidget(Colors.green),
         ];
 
+  // TODO: implement bluetooth state
+  bool _bluetoothConnected = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,6 +42,7 @@ class _HomeState extends State<Home> {
         ),
         IconButton(
           icon: Icon(Icons.bluetooth),
+          color: _bluetoothConnected ? Colors.blue : Colors.white, 
           onPressed: () {
             Navigator.of(context).pushNamed('/bluetooth');
           },
