@@ -7,8 +7,8 @@ import 'camera.dart';
 import 'bounding_box.dart';
 
 class CameraStream extends StatefulWidget {
-
   final List<CameraDescription> cameras;
+
   CameraStream(this.cameras);
 
   @override
@@ -19,6 +19,7 @@ class _CameraStreamState extends State<CameraStream> {
   List<dynamic> _recognitions;
   int _imageHeight = 0;
   int _imageWidth = 0;
+  bool _detectModeOn = false;
 
   @override
   void initState() {
@@ -43,21 +44,21 @@ class _CameraStreamState extends State<CameraStream> {
   @override
   Widget build(BuildContext context) {
     Size screen = MediaQuery.of(context).size;
-    print(_recognitions);
     loadModel();
     return Scaffold(
       body: Stack(
         children: [
-          Camera(
-            widget.cameras,
-            setRecognitions,
-          ),
+          Camera(widget.cameras, setRecognitions, _detectModeOn),
           BoundingBox(
             _recognitions == null ? [] : _recognitions,
             math.max(_imageHeight, _imageWidth),
             math.min(_imageHeight, _imageWidth),
             screen.height,
             screen.width,
+          ),
+          Switch(
+              value: _detectModeOn,
+              onChanged: (value) => setState(() => _detectModeOn = value)
           ),
         ],
       ),

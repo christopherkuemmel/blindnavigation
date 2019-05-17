@@ -42,7 +42,7 @@ class _HomeState extends State<Home> {
         ),
         IconButton(
           icon: Icon(Icons.bluetooth),
-          color: _bluetoothConnected ? Colors.blue : Colors.white, 
+          color: _bluetoothConnected ? Colors.blue : Colors.white,
           onPressed: () {
             Navigator.of(context).pushNamed('/bluetooth');
           },
