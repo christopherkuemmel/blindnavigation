@@ -50,7 +50,7 @@ class _CameraStreamState extends State<CameraStream> {
         children: [
           Camera(widget.cameras, setRecognitions, _detectModeOn),
           BoundingBox(
-            _recognitions == null ? [] : _recognitions,
+            getRecognitions(),
             math.max(_imageHeight, _imageWidth),
             math.min(_imageHeight, _imageWidth),
             screen.height,
@@ -63,5 +63,10 @@ class _CameraStreamState extends State<CameraStream> {
         ],
       ),
     );
+  }
+
+  List<dynamic> getRecognitions() {
+    return _recognitions == null ? [] :
+      _detectModeOn ? _recognitions : [];
   }
 }
