@@ -63,6 +63,7 @@ class _CameraState extends State<Camera> {
     var screenRatio = screenH / screenW;
     var previewRatio = previewH / previewW;
 
+    // TODO: Change detection frame rate
     controller.startImageStream((CameraImage img) {
       if (!isDetecting) {
         isDetecting = true;
@@ -73,6 +74,7 @@ class _CameraState extends State<Camera> {
       }
     });
 
+    // TODO: fix wide screen view of camera
     return OverflowBox(
       maxHeight:
           screenRatio > previewRatio ? screenH : screenW / previewW * previewH,

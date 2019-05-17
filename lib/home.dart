@@ -23,6 +23,7 @@ class _HomeState extends State<Home> {
   _HomeState(this.cameras)
       : _children = [
           CameraStream(cameras),
+          // TODO: add video imports
           PlaceholderWidget(Colors.green),
         ];
 

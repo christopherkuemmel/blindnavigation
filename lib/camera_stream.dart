@@ -44,6 +44,8 @@ class _CameraStreamState extends State<CameraStream> {
   @override
   Widget build(BuildContext context) {
     Size screen = MediaQuery.of(context).size;
+    // TODO: fix bounding box position
+    final double appBarHeight = AppBar().preferredSize.height;
     loadModel();
     return Scaffold(
       body: Stack(
