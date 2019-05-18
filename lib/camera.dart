@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:tflite/tflite.dart';
 import 'dart:math' as math;
+import 'package:shared_preferences/shared_preferences.dart';
+
+const RES_LOW = 0;
+const RES_MED = 1;
+const RES_HIGH = 2;
 
 typedef void Callback(List<dynamic> list, int h, int w);
 
@@ -20,24 +25,29 @@ class _CameraState extends State<Camera> {
   CameraController controller;
   bool isDetecting = false;
   bool _detectModeOn = true;
+  ResolutionPreset _resolution;
 
   @override
   void initState() {
     super.initState();
-    print(_detectModeOn);
+    print('initState of Camera called');
 
     if (widget.cameras == null || widget.cameras.length < 1) {
       print('No camera is found');
     } else {
-      controller = new CameraController(
-        widget.cameras[0],
-        ResolutionPreset.medium,
-      );
-      controller.initialize().then((_) {
-        if (!mounted) {
-          return;
-        }
-        setState(() {});
+      _getResolution().then((res) {
+        _resolution = res;
+        print(_resolution);
+        controller = new CameraController(
+          widget.cameras[0],
+          _resolution,
+        );
+        controller.initialize().then((_) {
+          if (!mounted) {
+            return;
+          }
+          setState(() {});
+        });
       });
     }
   }
@@ -110,8 +120,24 @@ class _CameraState extends State<Camera> {
 
   @override
   void didUpdateWidget(Camera oldWidget) {
+    //TODO: fix PlatformException(error, No active stream to cancel, null)
     controller.stopImageStream();
     _detectModeOn = widget.detectModeOn;
     super.didUpdateWidget(oldWidget);
+  }
+
+  Future<ResolutionPreset> _getResolution() async {
+    print('called _getResolution');
+    final prefs = await SharedPreferences.getInstance();
+    int res = prefs.getInt('resolution');
+    print("resInt: $res");
+    switch (res) {
+      case RES_LOW:
+        return ResolutionPreset.low;
+      case RES_MED:
+        return ResolutionPreset.medium;
+      default:
+        return ResolutionPreset.high;
+    }
   }
 }
