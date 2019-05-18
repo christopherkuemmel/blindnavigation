@@ -27,6 +27,7 @@ class _CameraState extends State<Camera> {
   bool _detectModeOn = true;
   ResolutionPreset _resolution;
 
+  // TODO: initState again coming back from settings route
   @override
   void initState() {
     super.initState();

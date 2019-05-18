@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testapp/bluetooth/vibrotac/vibrotac.dart';
 
 class Bluetooth extends StatefulWidget {
@@ -48,7 +49,6 @@ class _BluetoothState extends State<Bluetooth> {
             _connected = true;
             _pressed = false;
           });
-
           break;
 
         case FlutterBluetoothSerial.DISCONNECTED:
@@ -63,6 +63,10 @@ class _BluetoothState extends State<Bluetooth> {
           break;
       }
     });
+
+    // set if bluetooth is connected to shared preferences
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('connected', _connected);
 
     // It is an error to call [setState] unless [mounted] is true.
     if (!mounted) {
@@ -172,10 +176,11 @@ class _BluetoothState extends State<Bluetooth> {
                     ),
                   ),
                   Container(
-                    width: 80.0,
-                    alignment: Alignment.center,
-                    child: Text((_durationSliderValue*10000.floor()).toStringAsFixed(0) + " ms")
-                  )
+                      width: 80.0,
+                      alignment: Alignment.center,
+                      child: Text((_durationSliderValue * 10000.floor())
+                              .toStringAsFixed(0) +
+                          " ms"))
                 ],
               ),
             ),
@@ -198,10 +203,9 @@ class _BluetoothState extends State<Bluetooth> {
                     ),
                   ),
                   Container(
-                    width: 80.0,
-                    alignment: Alignment.center,
-                    child: Text(_intensitySliderValue.toStringAsFixed(2))
-                  )
+                      width: 80.0,
+                      alignment: Alignment.center,
+                      child: Text(_intensitySliderValue.toStringAsFixed(2)))
                 ],
               ),
             ),
@@ -271,11 +275,13 @@ class _BluetoothState extends State<Bluetooth> {
   }
 
   void _sendLeftRequest() {
-    Vibrotac().leftRequest(_intensitySliderValue, (_durationSliderValue*10000).floor(), bluetooth);
+    Vibrotac().leftRequest(_intensitySliderValue,
+        (_durationSliderValue * 10000).floor(), bluetooth);
   }
 
   void _sendRightRequest() {
-    Vibrotac().rightRequest(_intensitySliderValue, (_durationSliderValue*10000).floor(), bluetooth);
+    Vibrotac().rightRequest(_intensitySliderValue,
+        (_durationSliderValue * 10000).floor(), bluetooth);
   }
 
   // Method to show a Snackbar,

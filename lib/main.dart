@@ -15,6 +15,7 @@ Future<Null> main() async {
   // set defaults in shared preferences on app start
   final prefs = await SharedPreferences.getInstance();
   await prefs.setInt('resolution', 0);
+  await prefs.setBool('connected', false);
 
   try {
     cameras = await availableCameras();
