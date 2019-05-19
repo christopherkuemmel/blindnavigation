@@ -31,14 +31,11 @@ class _CameraState extends State<Camera> {
   @override
   void initState() {
     super.initState();
-    print('initState of Camera called');
-
     if (widget.cameras == null || widget.cameras.length < 1) {
       print('No camera is found');
     } else {
       _getResolution().then((res) {
         _resolution = res;
-        print(_resolution);
         controller = new CameraController(
           widget.cameras[0],
           _resolution,
@@ -113,7 +110,7 @@ class _CameraState extends State<Camera> {
       print(recognitions);
 
       int endTime = new DateTime.now().millisecondsSinceEpoch;
-      print("Detection took ${endTime - startTime} ms");
+      print("Detection took ${endTime - startTime}");
 
       widget.setRecognitions(recognitions, img.height, img.width);
     });
@@ -128,10 +125,8 @@ class _CameraState extends State<Camera> {
   }
 
   Future<ResolutionPreset> _getResolution() async {
-    print('called _getResolution');
     final prefs = await SharedPreferences.getInstance();
     int res = prefs.getInt('resolution');
-    print("resInt: $res");
     switch (res) {
       case RES_LOW:
         return ResolutionPreset.low;
