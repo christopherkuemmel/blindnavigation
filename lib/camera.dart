@@ -3,6 +3,7 @@ import 'package:camera/camera.dart';
 import 'package:tflite/tflite.dart';
 import 'dart:math' as math;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:native_device_orientation/native_device_orientation.dart';
 
 const RES_LOW = 0;
 const RES_MED = 1;
@@ -18,7 +19,7 @@ class Camera extends StatefulWidget {
   Camera(this.cameras, this.setRecognitions, this.detectModeOn);
 
   @override
-  _CameraState createState() => new _CameraState();
+  _CameraState createState() => _CameraState();
 }
 
 class _CameraState extends State<Camera> {
@@ -36,7 +37,7 @@ class _CameraState extends State<Camera> {
     } else {
       _getResolution().then((res) {
         _resolution = res;
-        controller = new CameraController(
+        controller = CameraController(
           widget.cameras[0],
           _resolution,
         );
@@ -62,12 +63,12 @@ class _CameraState extends State<Camera> {
       return Container();
     }
 
-    var tmp = MediaQuery.of(context).size;
-    var screenH = math.max(tmp.height, tmp.width);
-    var screenW = math.min(tmp.height, tmp.width);
-    tmp = controller.value.previewSize;
-    var previewH = math.max(tmp.height, tmp.width);
-    var previewW = math.min(tmp.height, tmp.width);
+    var contextSize = MediaQuery.of(context).size;
+    var screenH = math.max(contextSize.height, contextSize.width);
+    var screenW = math.min(contextSize.height, contextSize.width);
+    var previewSize = controller.value.previewSize;
+    var previewH = math.max(previewSize.height, previewSize.width);
+    var previewW = math.min(previewSize.height, previewSize.width);
     var screenRatio = screenH / screenW;
     var previewRatio = previewH / previewW;
 
@@ -82,18 +83,42 @@ class _CameraState extends State<Camera> {
       }
     });
 
-    // TODO: fix wide screen view of camera
-    return OverflowBox(
-      maxHeight:
-          screenRatio > previewRatio ? screenH : screenW / previewW * previewH,
-      maxWidth:
-          screenRatio > previewRatio ? screenH / previewH * previewW : screenW,
-      child: CameraPreview(controller),
-    );
+    return NativeDeviceOrientationReader(builder: (context) {
+      NativeDeviceOrientation orientation =
+          NativeDeviceOrientationReader.orientation(context);
+
+      int turns;
+      switch (orientation) {
+        case NativeDeviceOrientation.landscapeLeft:
+          turns = -1;
+          break;
+        case NativeDeviceOrientation.landscapeRight:
+          turns = 1;
+          break;
+        case NativeDeviceOrientation.portraitDown:
+          turns = 2;
+          break;
+        default:
+          turns = 0;
+          break;
+      }
+
+      return RotatedBox(
+          quarterTurns: turns,
+          child: OverflowBox(
+            maxHeight: screenRatio > previewRatio
+                ? screenH
+                : screenW / previewW * previewH,
+            maxWidth: screenRatio > previewRatio
+                ? screenH / previewH * previewW
+                : screenW,
+            child: CameraPreview(controller),
+          ));
+    });
   }
 
   void detectObjects(CameraImage img) {
-    int startTime = new DateTime.now().millisecondsSinceEpoch;
+    int startTime = DateTime.now().millisecondsSinceEpoch;
 
     Tflite.detectObjectOnFrame(
       bytesList: img.planes.map((plane) {
@@ -109,7 +134,7 @@ class _CameraState extends State<Camera> {
     ).then((recognitions) {
       print(recognitions);
 
-      int endTime = new DateTime.now().millisecondsSinceEpoch;
+      int endTime = DateTime.now().millisecondsSinceEpoch;
       print("Detection took ${endTime - startTime}");
 
       widget.setRecognitions(recognitions, img.height, img.width);
