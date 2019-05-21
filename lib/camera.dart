@@ -26,9 +26,9 @@ class _CameraState extends State<Camera> {
   CameraController controller;
   bool isDetecting = false;
   bool _detectModeOn = true;
+  int lastTime = new DateTime.now().millisecondsSinceEpoch;
   ResolutionPreset _resolution;
 
-  // TODO: initState again coming back from settings route
   @override
   void initState() {
     super.initState();
@@ -46,6 +46,47 @@ class _CameraState extends State<Camera> {
             return;
           }
           setState(() {});
+          
+          controller.startImageStream((CameraImage img) {
+            int currentTime = new DateTime.now().millisecondsSinceEpoch;
+            // every 5 seconds
+            if (currentTime - lastTime > 5000 && !isDetecting) {
+              // if detection is on
+              if (_detectModeOn) {
+                // just detect if no other process is running
+                if (!isDetecting) {
+                  isDetecting = true;
+
+                  int startTime = new DateTime.now().millisecondsSinceEpoch;
+
+                  Tflite.detectObjectOnFrame(
+                    bytesList: img.planes.map((plane) {
+                      return plane.bytes;
+                    }).toList(),
+                    model: "SSDMobileNet",
+                    imageHeight: img.height,
+                    imageWidth: img.width,
+                    imageMean: 127.5,
+                    imageStd: 127.5,
+                    numResultsPerClass: 1,
+                    threshold: 0.4,
+                  ).then((recognitions) {
+                    print(recognitions);
+
+                    int endTime = new DateTime.now().millisecondsSinceEpoch;
+                    print("Detection took ${endTime - startTime}");
+
+                    widget.setRecognitions(recognitions, img.height, img.width);
+
+                    isDetecting = false;
+                  });
+                  lastTime = currentTime;
+                }
+              }
+            }
+        });
+
+
         });
       });
     }
@@ -71,17 +112,6 @@ class _CameraState extends State<Camera> {
     var previewW = math.min(previewSize.height, previewSize.width);
     var screenRatio = screenH / screenW;
     var previewRatio = previewH / previewW;
-
-    // TODO: Change detection frame rate
-    controller.startImageStream((CameraImage img) {
-      if (!isDetecting) {
-        isDetecting = true;
-        if (_detectModeOn) {
-          detectObjects(img);
-        }
-        isDetecting = false;
-      }
-    });
 
     return NativeDeviceOrientationReader(builder: (context) {
       NativeDeviceOrientation orientation =
@@ -117,34 +147,8 @@ class _CameraState extends State<Camera> {
     });
   }
 
-  void detectObjects(CameraImage img) {
-    int startTime = DateTime.now().millisecondsSinceEpoch;
-
-    Tflite.detectObjectOnFrame(
-      bytesList: img.planes.map((plane) {
-        return plane.bytes;
-      }).toList(),
-      model: "SSDMobileNet",
-      imageHeight: img.height,
-      imageWidth: img.width,
-      imageMean: 127.5,
-      imageStd: 127.5,
-      numResultsPerClass: 1,
-      threshold: 0.4,
-    ).then((recognitions) {
-      print(recognitions);
-
-      int endTime = DateTime.now().millisecondsSinceEpoch;
-      print("Detection took ${endTime - startTime}");
-
-      widget.setRecognitions(recognitions, img.height, img.width);
-    });
-  }
-
   @override
   void didUpdateWidget(Camera oldWidget) {
-    //TODO: fix PlatformException(error, No active stream to cancel, null)
-    controller.stopImageStream();
     _detectModeOn = widget.detectModeOn;
     super.didUpdateWidget(oldWidget);
   }
