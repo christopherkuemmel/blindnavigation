@@ -3,7 +3,13 @@ import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testapp/bluetooth/vibrotac/vibrotac.dart';
 
+typedef void Callback(bool bluetoothConnected, FlutterBluetoothSerial device);
+
 class Bluetooth extends StatefulWidget {
+  final Callback setBluetooth;
+
+  Bluetooth(this.setBluetooth);
+
   @override
   _BluetoothState createState() => _BluetoothState();
 }
@@ -41,6 +47,15 @@ class _BluetoothState extends State<Bluetooth> {
       print(e);
     }
 
+    bluetooth.isConnected.then((isConnected) {
+      if (isConnected) {
+        setState(() {
+          _connected = true;
+          _pressed = false;
+        });
+      }
+    });
+
     // For knowing when bluetooth is connected and when disconnected
     bluetooth.onStateChanged().listen((state) {
       switch (state) {
@@ -56,6 +71,7 @@ class _BluetoothState extends State<Bluetooth> {
             _connected = false;
             _pressed = false;
           });
+          widget.setBluetooth(false, null);
           break;
 
         default:
@@ -115,6 +131,7 @@ class _BluetoothState extends State<Bluetooth> {
                   ),
                   DropdownButton(
                     items: _getDeviceItems(),
+                    // TODO: show already selected/connected device when reloading bluetooth widget
                     onChanged: (value) => setState(() => _device = value),
                     value: _device,
                   ),
@@ -263,6 +280,7 @@ class _BluetoothState extends State<Bluetooth> {
             setState(() => _pressed = false);
           });
           setState(() => _pressed = true);
+          widget.setBluetooth(true, bluetooth);
         }
       });
     }
@@ -272,6 +290,7 @@ class _BluetoothState extends State<Bluetooth> {
   void _disconnect() {
     bluetooth.disconnect();
     setState(() => _pressed = true);
+    widget.setBluetooth(false, null);
   }
 
   void _sendLeftRequest() {

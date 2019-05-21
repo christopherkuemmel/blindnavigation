@@ -37,7 +37,7 @@ class App extends StatelessWidget {
       home: Home(cameras: cameras),
       routes: <String, WidgetBuilder>{
         '/settings': (BuildContext context) => Settings(),
-        '/bluetooth': (BuildContext context) => Bluetooth(),
+        // '/bluetooth': (BuildContext context) => Bluetooth(),
       },
     );
   }

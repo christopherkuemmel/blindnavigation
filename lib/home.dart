@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:testapp/bluetooth/bluetooth.dart';
 import 'package:testapp/camera_stream.dart';
 import 'package:testapp/placeholder.dart';
 
@@ -28,8 +29,16 @@ class _HomeState extends State<Home> {
           PlaceholderWidget(Colors.green),
         ];
 
-  // TODO: implement bluetooth state
+  // Bluetooth State
   bool _bluetoothConnected = false;
+  FlutterBluetoothSerial _device;
+
+  setBluetooth(bluetoothConnected, device){
+    setState(() {
+      _bluetoothConnected = bluetoothConnected;
+      _device = device;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +55,7 @@ class _HomeState extends State<Home> {
           icon: Icon(Icons.bluetooth),
           color: _bluetoothConnected ? Colors.blue : Colors.white,
           onPressed: () {
-            Navigator.of(context).pushNamed('/bluetooth');
+            Navigator.push(context, MaterialPageRoute(builder: (context) => Bluetooth(setBluetooth)));
           },
         ),
       ]),
