@@ -30,14 +30,14 @@ class Vibrotac {
     });
   }
 
-  void leftRequest(double intensity, int duration, FlutterBluetoothSerial device) {
+  void sendLeftRequest(double intensity, int duration, FlutterBluetoothSerial device) {
     var modules = [
       {'moduleId': 2, 'duration': duration, 'intensity': intensity},
       {'moduleId': 3, 'duration': duration, 'intensity': intensity}
     ];
     sendRequest(modules, device);
   }
-  void rightRequest(double intensity, int duration, FlutterBluetoothSerial device) {
+  void sendRightRequest(double intensity, int duration, FlutterBluetoothSerial device) {
     var modules = [
       {'moduleId': 5, 'duration': duration, 'intensity': intensity},
       {'moduleId': 6, 'duration': duration, 'intensity': intensity}

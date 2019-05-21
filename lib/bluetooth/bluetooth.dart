@@ -294,12 +294,12 @@ class _BluetoothState extends State<Bluetooth> {
   }
 
   void _sendLeftRequest() {
-    Vibrotac().leftRequest(_intensitySliderValue,
+    Vibrotac().sendLeftRequest(_intensitySliderValue,
         (_durationSliderValue * 10000).floor(), bluetooth);
   }
 
   void _sendRightRequest() {
-    Vibrotac().rightRequest(_intensitySliderValue,
+    Vibrotac().sendRightRequest(_intensitySliderValue,
         (_durationSliderValue * 10000).floor(), bluetooth);
   }
 
