@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:testapp/bluetooth/bluetooth.dart';
 import 'package:testapp/camera_stream.dart';
-import 'package:testapp/placeholder.dart';
+import 'package:testapp/lndw/recognition_heuristic.dart';
 
 class Home extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -11,23 +11,21 @@ class Home extends StatefulWidget {
   const Home({Key key, this.cameras}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() {
-    return _HomeState(cameras);
-  }
+  _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  final List<CameraDescription> cameras;
 
-  int _currentIndex = 0;
-  final List<Widget> _children;
+  List<dynamic> _recognitions;
 
-  _HomeState(this.cameras)
-      : _children = [
-          CameraStream(cameras),
-          // TODO: add video imports
-          PlaceholderWidget(Colors.green),
-        ];
+  setRecognitions(recognitions, imageHeight, imageWidth) {
+    setState(() {
+      _recognitions = recognitions;
+      // _imageHeight = imageHeight;
+      // _imageWidth = imageWidth;
+    });
+    if (_device != null) RecognitionHeuristic().sendRequestBasedOnRecognitions(_recognitions, _device);
+  }
 
   // Bluetooth State
   bool _bluetoothConnected = false;
@@ -59,27 +57,7 @@ class _HomeState extends State<Home> {
           },
         ),
       ]),
-      body: _children[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: onTabTapped,
-        currentIndex: _currentIndex,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.camera_alt),
-            title: Text('Camera'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.videocam),
-            title: Text('Video'),
-          ),
-        ],
-      ),
+      body: CameraStream(widget.cameras, setRecognitions),
     );
-  }
-
-  void onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
   }
 }

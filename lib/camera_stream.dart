@@ -6,10 +6,13 @@ import 'dart:math' as math;
 import 'camera.dart';
 import 'bounding_box.dart';
 
+typedef void Callback(List<dynamic> list, int h, int w);
+
 class CameraStream extends StatefulWidget {
   final List<CameraDescription> cameras;
+  final Callback setRecognitions;
 
-  CameraStream(this.cameras);
+  CameraStream(this.cameras, this.setRecognitions);
 
   @override
   _CameraStreamState createState() => _CameraStreamState();
@@ -39,6 +42,8 @@ class _CameraStreamState extends State<CameraStream> {
       _imageHeight = imageHeight;
       _imageWidth = imageWidth;
     });
+    // pass recogntions to parent widget
+    widget.setRecognitions(_recognitions, _imageHeight, _imageWidth);
   }
 
   @override
