@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testapp/bluetooth/vibrotac/vibrotac.dart';
 
 typedef void Callback(bool bluetoothConnected, FlutterBluetoothSerial device);
@@ -79,10 +78,6 @@ class _BluetoothState extends State<Bluetooth> {
           break;
       }
     });
-
-    // set if bluetooth is connected to shared preferences
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setBool('connected', _connected);
 
     // It is an error to call [setState] unless [mounted] is true.
     if (!mounted) {
