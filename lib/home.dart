@@ -4,6 +4,7 @@ import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:testapp/bluetooth/bluetooth.dart';
 import 'package:testapp/camera_stream.dart';
 import 'package:testapp/lndw/recognition_heuristic.dart';
+import 'package:testapp/settings.dart';
 
 class Home extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -46,7 +47,7 @@ class _HomeState extends State<Home> {
         IconButton(
           icon: Icon(Icons.settings),
           onPressed: () {
-            Navigator.of(context).pushNamed('/settings');
+            Navigator.push(context, MaterialPageRoute(builder: (context) => Settings()));
           },
         ),
         IconButton(
