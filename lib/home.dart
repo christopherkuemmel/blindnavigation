@@ -35,6 +35,7 @@ class _HomeState extends State<Home> {
 
   // Settings
   int _resolution = 0;
+  double _framerate = 1.0;
 
   setBluetooth(bluetoothConnected, device){
     setState(() {
@@ -43,9 +44,10 @@ class _HomeState extends State<Home> {
     });
   }
 
-  setSettings(resolution){
+  setSettings(resolution, framerate){
     setState(() {
       _resolution = resolution;
+      _framerate = framerate;
     });
   }
 
@@ -60,7 +62,7 @@ class _HomeState extends State<Home> {
         IconButton(
           icon: Icon(Icons.settings),
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => Settings(setSettings)));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => Settings(setSettings, _resolution, _framerate)));
           },
         ),
         IconButton(
