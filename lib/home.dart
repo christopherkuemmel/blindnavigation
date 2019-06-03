@@ -73,7 +73,7 @@ class _HomeState extends State<Home> {
           },
         ),
       ]),
-      body: CameraStream(widget.cameras, _resolution, setRecognitions, _detectModeOn),
+      body: CameraStream(widget.cameras, _resolution, _framerate, setRecognitions, _detectModeOn),
     );
   }
 }

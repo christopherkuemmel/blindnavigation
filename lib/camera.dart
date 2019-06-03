@@ -15,8 +15,9 @@ class Camera extends StatefulWidget {
   final Callback setRecognitions;
   final bool detectModeOn;
   final int resolution;
+  final int framerate;
 
-  Camera(this.cameras, this.setRecognitions, this.detectModeOn, this.resolution);
+  Camera(this.cameras, this.setRecognitions, this.detectModeOn, this.resolution, this.framerate);
 
   @override
   _CameraState createState() => _CameraState();
@@ -27,10 +28,14 @@ class _CameraState extends State<Camera> {
   bool isDetecting = false;
   bool _detectModeOn = true;
   int lastTime = new DateTime.now().millisecondsSinceEpoch;
-  ResolutionPreset _resolutionPreset = ResolutionPreset.low;
+  ResolutionPreset _resolutionPreset;
+  int _framerate;
 
   @override
   void initState() {
+    _resolutionPreset = _getResolution(widget.resolution);
+    _framerate = widget.framerate;
+
     super.initState();
     if (widget.cameras == null || widget.cameras.length < 1) {
       print('No camera is found');
@@ -48,7 +53,7 @@ class _CameraState extends State<Camera> {
         controller.startImageStream((CameraImage img) {
           int currentTime = new DateTime.now().millisecondsSinceEpoch;
           // set detection rate
-          if (currentTime - lastTime > 1000 && !isDetecting) {
+          if (currentTime - lastTime > 1000/_framerate && !isDetecting) {
             // if detection is on
             if (_detectModeOn) {
               // just detect if no other process is running
@@ -146,6 +151,7 @@ class _CameraState extends State<Camera> {
   void didUpdateWidget(Camera oldWidget) {
     _detectModeOn = widget.detectModeOn;
     _resolutionPreset = _getResolution(widget.resolution);
+    _framerate = widget.framerate;
     super.didUpdateWidget(oldWidget);
   }
 

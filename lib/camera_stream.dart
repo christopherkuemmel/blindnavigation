@@ -11,10 +11,11 @@ typedef void Callback(List<dynamic> list, int h, int w);
 class CameraStream extends StatefulWidget {
   final List<CameraDescription> cameras;
   final int resolution;
+  final double framerate;
   final Callback setRecognitions;
   final bool detectModeOn;
 
-  CameraStream(this.cameras,this.resolution, this.setRecognitions, this.detectModeOn);
+  CameraStream(this.cameras,this.resolution, this.framerate, this.setRecognitions, this.detectModeOn);
 
   @override
   _CameraStreamState createState() => _CameraStreamState();
@@ -25,10 +26,13 @@ class _CameraStreamState extends State<CameraStream> {
   int _imageHeight = 0;
   int _imageWidth = 0;
   bool _detectModeOn = false;
-  int _resolution = 0;
+  int _resolution;
+  int _framerate;
 
   @override
   void initState() {
+    _resolution = widget.resolution;
+    _framerate = widget.framerate.floor();
     super.initState();
   }
 
@@ -56,7 +60,7 @@ class _CameraStreamState extends State<CameraStream> {
     return Scaffold(
       body: Stack(
         children: [
-          Camera(widget.cameras, setRecognitions, _detectModeOn, _resolution),
+          Camera(widget.cameras, setRecognitions, _detectModeOn, _resolution, _framerate),
           BoundingBox(
             getRecognitions(),
             math.max(_imageHeight, _imageWidth),
@@ -78,6 +82,7 @@ class _CameraStreamState extends State<CameraStream> {
   void didUpdateWidget(CameraStream oldWidget) {
     setState(() {
       _resolution = widget.resolution;
+      _framerate = widget.framerate.floor();
       _detectModeOn = widget.detectModeOn;
     });
     super.didUpdateWidget(oldWidget);
