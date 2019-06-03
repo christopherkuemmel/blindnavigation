@@ -36,7 +36,7 @@ class _HomeState extends State<Home> {
   FlutterBluetoothSerial _device;
 
   // Settings
-  int _resolution = 0;
+  int _resolution = 2;
   double _framerate = 1.0;
 
   setBluetooth(bluetoothConnected, device){
