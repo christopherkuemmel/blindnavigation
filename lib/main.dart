@@ -2,16 +2,11 @@ import 'dart:async';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testapp/home.dart';
 
 List<CameraDescription> cameras;
 
 Future<Null> main() async {
-  // set defaults in shared preferences on app start
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.setInt('resolution', 0);
-  await prefs.setBool('connected', false);
 
   try {
     cameras = await availableCameras();
