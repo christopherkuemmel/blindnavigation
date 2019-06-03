@@ -18,6 +18,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   List<dynamic> _recognitions;
+  bool _detectModeOn = false;
 
   setRecognitions(recognitions, imageHeight, imageWidth) {
     setState(() {
@@ -52,7 +53,10 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Object Detection'), actions: <Widget>[
-        // action button
+        Switch(
+          value: _detectModeOn,
+          onChanged: (value) => setState(() => _detectModeOn = value)
+        ),
         IconButton(
           icon: Icon(Icons.settings),
           onPressed: () {
@@ -67,7 +71,7 @@ class _HomeState extends State<Home> {
           },
         ),
       ]),
-      body: CameraStream(widget.cameras, _resolution, setRecognitions),
+      body: CameraStream(widget.cameras, _resolution, setRecognitions, _detectModeOn),
     );
   }
 }

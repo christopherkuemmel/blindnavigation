@@ -12,8 +12,9 @@ class CameraStream extends StatefulWidget {
   final List<CameraDescription> cameras;
   final int resolution;
   final Callback setRecognitions;
+  final bool detectModeOn;
 
-  CameraStream(this.cameras,this.resolution, this.setRecognitions);
+  CameraStream(this.cameras,this.resolution, this.setRecognitions, this.detectModeOn);
 
   @override
   _CameraStreamState createState() => _CameraStreamState();
@@ -62,12 +63,7 @@ class _CameraStreamState extends State<CameraStream> {
             math.min(_imageHeight, _imageWidth),
             screen.height,
             screen.width,
-          ),
-          // TODO: move switch button to appbar
-          Switch(
-              value: _detectModeOn,
-              onChanged: (value) => setState(() => _detectModeOn = value)
-          ),
+          )
         ],
       ),
     );
@@ -80,7 +76,10 @@ class _CameraStreamState extends State<CameraStream> {
 
   @override
   void didUpdateWidget(CameraStream oldWidget) {
-    _resolution = widget.resolution;
+    setState(() {
+      _resolution = widget.resolution;
+      _detectModeOn = widget.detectModeOn;
+    });
     super.didUpdateWidget(oldWidget);
   }
 }
