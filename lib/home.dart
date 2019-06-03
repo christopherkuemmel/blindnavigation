@@ -20,6 +20,8 @@ class _HomeState extends State<Home> {
   List<dynamic> _recognitions;
   bool _detectModeOn = false;
 
+  double _appBarHeight = AppBar().preferredSize.height;
+
   setRecognitions(recognitions, imageHeight, imageWidth) {
     setState(() {
       _recognitions = recognitions;
@@ -73,7 +75,7 @@ class _HomeState extends State<Home> {
           },
         ),
       ]),
-      body: CameraStream(widget.cameras, _resolution, _framerate, setRecognitions, _detectModeOn),
+      body: CameraStream(widget.cameras, _resolution, _framerate, setRecognitions, _detectModeOn, _appBarHeight),
     );
   }
 }

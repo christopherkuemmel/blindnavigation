@@ -14,8 +14,9 @@ class CameraStream extends StatefulWidget {
   final double framerate;
   final Callback setRecognitions;
   final bool detectModeOn;
+  final double appBarHeight;
 
-  CameraStream(this.cameras,this.resolution, this.framerate, this.setRecognitions, this.detectModeOn);
+  CameraStream(this.cameras,this.resolution, this.framerate, this.setRecognitions, this.detectModeOn, this.appBarHeight);
 
   @override
   _CameraStreamState createState() => _CameraStreamState();
@@ -67,6 +68,7 @@ class _CameraStreamState extends State<CameraStream> {
             math.min(_imageHeight, _imageWidth),
             screen.height,
             screen.width,
+            widget.appBarHeight
           )
         ],
       ),
