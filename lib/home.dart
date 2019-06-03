@@ -32,10 +32,19 @@ class _HomeState extends State<Home> {
   bool _bluetoothConnected = false;
   FlutterBluetoothSerial _device;
 
+  // Settings
+  int _resolution = 0;
+
   setBluetooth(bluetoothConnected, device){
     setState(() {
       _bluetoothConnected = bluetoothConnected;
       _device = device;
+    });
+  }
+
+  setSettings(resolution){
+    setState(() {
+      _resolution = resolution;
     });
   }
 
@@ -47,7 +56,7 @@ class _HomeState extends State<Home> {
         IconButton(
           icon: Icon(Icons.settings),
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => Settings()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => Settings(setSettings)));
           },
         ),
         IconButton(
@@ -58,7 +67,7 @@ class _HomeState extends State<Home> {
           },
         ),
       ]),
-      body: CameraStream(widget.cameras, setRecognitions),
+      body: CameraStream(widget.cameras, _resolution, setRecognitions),
     );
   }
 }

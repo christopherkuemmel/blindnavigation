@@ -5,12 +5,20 @@ const RES_LOW = 0;
 const RES_MED = 1;
 const RES_HIGH = 2;
 
+typedef void Callback(int resolution);
+
 class Settings extends StatefulWidget {
+
+  final Callback setSettings;
+
+  Settings(this.setSettings);
+
   @override
   _SettingsState createState() => _SettingsState();
 }
 
-class _SettingsState extends State {
+class _SettingsState extends State<Settings> {
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -39,17 +47,17 @@ class _SettingsState extends State {
                 children: <Widget>[
                   RaisedButton(
                     padding: const EdgeInsets.all(8.0),
-                    onPressed: () => _setResolution(RES_LOW),
+                    onPressed: () => widget.setSettings(RES_LOW),
                     child: const Text('Low'),
                   ),
                   RaisedButton(
                     padding: const EdgeInsets.all(8.0),
-                    onPressed: () => _setResolution(RES_MED),
+                    onPressed: () => widget.setSettings(RES_MED),
                     child: const Text('Medium'),
                   ),
                   RaisedButton(
                     padding: const EdgeInsets.all(8.0),
-                    onPressed: () => _setResolution(RES_HIGH),
+                    onPressed: () => widget.setSettings(RES_HIGH),
                     child: const Text('High'),
                   ),
                 ],
@@ -57,10 +65,5 @@ class _SettingsState extends State {
             ],
           )),
     );
-  }
-
-  Future<void> _setResolution(int res) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('resolution', res);
   }
 }
