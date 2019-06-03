@@ -144,11 +144,9 @@ class _CameraState extends State<Camera> {
 
   @override
   void didUpdateWidget(Camera oldWidget) {
-    setState(() {
-      _detectModeOn = widget.detectModeOn;
-      _resolutionPreset = _getResolution(widget.resolution);
-      super.didUpdateWidget(oldWidget);
-    });
+    _detectModeOn = widget.detectModeOn;
+    _resolutionPreset = _getResolution(widget.resolution);
+    super.didUpdateWidget(oldWidget);
   }
 
   ResolutionPreset _getResolution(res) {
