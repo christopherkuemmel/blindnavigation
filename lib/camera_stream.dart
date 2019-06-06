@@ -10,9 +10,13 @@ typedef void Callback(List<dynamic> list, int h, int w);
 
 class CameraStream extends StatefulWidget {
   final List<CameraDescription> cameras;
+  final int resolution;
+  final double framerate;
   final Callback setRecognitions;
+  final bool detectModeOn;
+  final double appBarHeight;
 
-  CameraStream(this.cameras, this.setRecognitions);
+  CameraStream(this.cameras,this.resolution, this.framerate, this.setRecognitions, this.detectModeOn, this.appBarHeight);
 
   @override
   _CameraStreamState createState() => _CameraStreamState();
@@ -23,9 +27,13 @@ class _CameraStreamState extends State<CameraStream> {
   int _imageHeight = 0;
   int _imageWidth = 0;
   bool _detectModeOn = false;
+  int _resolution;
+  int _framerate;
 
   @override
   void initState() {
+    _resolution = widget.resolution;
+    _framerate = widget.framerate.floor();
     super.initState();
   }
 
@@ -42,7 +50,7 @@ class _CameraStreamState extends State<CameraStream> {
       _imageHeight = imageHeight;
       _imageWidth = imageWidth;
     });
-    // pass recogntions to parent widget
+    // pass recognitions to parent widget
     widget.setRecognitions(_recognitions, _imageHeight, _imageWidth);
   }
 
@@ -53,19 +61,15 @@ class _CameraStreamState extends State<CameraStream> {
     return Scaffold(
       body: Stack(
         children: [
-          Camera(widget.cameras, setRecognitions, _detectModeOn),
+          Camera(widget.cameras, setRecognitions, _detectModeOn, _resolution, _framerate),
           BoundingBox(
             getRecognitions(),
             math.max(_imageHeight, _imageWidth),
             math.min(_imageHeight, _imageWidth),
             screen.height,
             screen.width,
-          ),
-          // TODO: move switch button to appbar
-          Switch(
-              value: _detectModeOn,
-              onChanged: (value) => setState(() => _detectModeOn = value)
-          ),
+            widget.appBarHeight
+          )
         ],
       ),
     );
@@ -74,5 +78,15 @@ class _CameraStreamState extends State<CameraStream> {
   List<dynamic> getRecognitions() {
     return _recognitions == null ? [] :
       _detectModeOn ? _recognitions : [];
+  }
+
+  @override
+  void didUpdateWidget(CameraStream oldWidget) {
+    setState(() {
+      _resolution = widget.resolution;
+      _framerate = widget.framerate.floor();
+      _detectModeOn = widget.detectModeOn;
+    });
+    super.didUpdateWidget(oldWidget);
   }
 }

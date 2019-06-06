@@ -18,6 +18,9 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
 
   List<dynamic> _recognitions;
+  bool _detectModeOn = false;
+
+  double _appBarHeight = AppBar().preferredSize.height;
 
   setRecognitions(recognitions, imageHeight, imageWidth) {
     setState(() {
@@ -32,6 +35,10 @@ class _HomeState extends State<Home> {
   bool _bluetoothConnected = false;
   FlutterBluetoothSerial _device;
 
+  // Settings
+  int _resolution = 2;
+  double _framerate = 1.0;
+
   setBluetooth(bluetoothConnected, device){
     setState(() {
       _bluetoothConnected = bluetoothConnected;
@@ -39,15 +46,25 @@ class _HomeState extends State<Home> {
     });
   }
 
+  setSettings(resolution, framerate){
+    setState(() {
+      _resolution = resolution;
+      _framerate = framerate;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Object Detection'), actions: <Widget>[
-        // action button
+        Switch(
+          value: _detectModeOn,
+          onChanged: (value) => setState(() => _detectModeOn = value)
+        ),
         IconButton(
           icon: Icon(Icons.settings),
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => Settings()));
+            Navigator.push(context, MaterialPageRoute(builder: (context) => Settings(setSettings, _resolution, _framerate)));
           },
         ),
         IconButton(
@@ -58,7 +75,7 @@ class _HomeState extends State<Home> {
           },
         ),
       ]),
-      body: CameraStream(widget.cameras, setRecognitions),
+      body: CameraStream(widget.cameras, _resolution, _framerate, setRecognitions, _detectModeOn, _appBarHeight),
     );
   }
 }

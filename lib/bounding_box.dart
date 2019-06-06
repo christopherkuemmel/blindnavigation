@@ -7,14 +7,10 @@ class BoundingBox extends StatelessWidget {
   final int previewW;
   final double screenH;
   final double screenW;
+  final double appBarHeight;
 
-  BoundingBox(
-    this.results,
-    this.previewH,
-    this.previewW,
-    this.screenH,
-    this.screenW,
-  );
+  BoundingBox(this.results, this.previewH, this.previewW, this.screenH,
+      this.screenW, this.appBarHeight);
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +22,6 @@ class BoundingBox extends StatelessWidget {
         var _h = re["rect"]["h"];
         var scaleW, scaleH, x, y, w, h;
 
-        // TODO: get appBarHeight without creating a new instance
-        final double _appBarHeight = AppBar().preferredSize.height;
-
         if (screenH / screenW > previewH / previewW) {
           scaleW = screenH / previewH * previewW;
           scaleH = screenH;
@@ -36,7 +29,7 @@ class BoundingBox extends StatelessWidget {
           x = (_x - difW / 2) * scaleW;
           w = _w * scaleW;
           if (_x < difW / 2) w -= (difW / 2 - _x) * scaleW;
-          y = _y * scaleH - _appBarHeight;
+          y = _y * scaleH - appBarHeight;
           h = _h * scaleH;
         } else {
           scaleH = screenW / previewW * previewH;
@@ -44,7 +37,7 @@ class BoundingBox extends StatelessWidget {
           var difH = (scaleH - screenH) / scaleH;
           x = _x * scaleW;
           w = _w * scaleW;
-          y = (_y - difH / 2) * scaleH - _appBarHeight;
+          y = (_y - difH / 2) * scaleH - appBarHeight;
           h = _h * scaleH;
           if (_y < difH / 2) h -= (difH / 2 - _y) * scaleH;
         }

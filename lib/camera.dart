@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:tflite/tflite.dart';
 import 'dart:math' as math;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:native_device_orientation/native_device_orientation.dart';
 
 const RES_LOW = 0;
@@ -15,8 +14,10 @@ class Camera extends StatefulWidget {
   final List<CameraDescription> cameras;
   final Callback setRecognitions;
   final bool detectModeOn;
+  final int resolution;
+  final int framerate;
 
-  Camera(this.cameras, this.setRecognitions, this.detectModeOn);
+  Camera(this.cameras, this.setRecognitions, this.detectModeOn, this.resolution, this.framerate);
 
   @override
   _CameraState createState() => _CameraState();
@@ -27,66 +28,65 @@ class _CameraState extends State<Camera> {
   bool isDetecting = false;
   bool _detectModeOn = true;
   int lastTime = new DateTime.now().millisecondsSinceEpoch;
-  ResolutionPreset _resolution;
+  ResolutionPreset _resolutionPreset;
+  int _framerate;
 
   @override
   void initState() {
+    _resolutionPreset = _getResolution(widget.resolution);
+    _framerate = widget.framerate;
+
     super.initState();
     if (widget.cameras == null || widget.cameras.length < 1) {
       print('No camera is found');
     } else {
-      _getResolution().then((res) {
-        _resolution = res;
-        controller = CameraController(
-          widget.cameras[0],
-          _resolution,
-        );
-        controller.initialize().then((_) {
-          if (!mounted) {
-            return;
-          }
-          setState(() {});
-          
-          controller.startImageStream((CameraImage img) {
-            int currentTime = new DateTime.now().millisecondsSinceEpoch;
-            // every 5 seconds
-            if (currentTime - lastTime > 5000 && !isDetecting) {
-              // if detection is on
-              if (_detectModeOn) {
-                // just detect if no other process is running
-                if (!isDetecting) {
-                  isDetecting = true;
+      controller = CameraController(
+        widget.cameras[0],
+        _resolutionPreset,
+      );
+      controller.initialize().then((_) {
+        if (!mounted) {
+          return;
+        }
+        setState(() {});
 
-                  int startTime = new DateTime.now().millisecondsSinceEpoch;
+        controller.startImageStream((CameraImage img) {
+          int currentTime = new DateTime.now().millisecondsSinceEpoch;
+          // set detection rate
+          if (currentTime - lastTime > 1000/_framerate && !isDetecting) {
+            // if detection is on
+            if (_detectModeOn) {
+              // just detect if no other process is running
+              if (!isDetecting) {
+                isDetecting = true;
 
-                  Tflite.detectObjectOnFrame(
-                    bytesList: img.planes.map((plane) {
-                      return plane.bytes;
-                    }).toList(),
-                    model: "SSDMobileNet",
-                    imageHeight: img.height,
-                    imageWidth: img.width,
-                    imageMean: 127.5,
-                    imageStd: 127.5,
-                    numResultsPerClass: 1,
-                    threshold: 0.4,
-                  ).then((recognitions) {
-                    print(recognitions);
+                int startTime = new DateTime.now().millisecondsSinceEpoch;
 
-                    int endTime = new DateTime.now().millisecondsSinceEpoch;
-                    print("Detection took ${endTime - startTime}");
+                Tflite.detectObjectOnFrame(
+                  bytesList: img.planes.map((plane) {
+                    return plane.bytes;
+                  }).toList(),
+                  model: "SSDMobileNet",
+                  imageHeight: img.height,
+                  imageWidth: img.width,
+                  imageMean: 127.5,
+                  imageStd: 127.5,
+                  numResultsPerClass: 1,
+                  threshold: 0.4,
+                ).then((recognitions) {
+                  print(recognitions);
 
-                    widget.setRecognitions(recognitions, img.height, img.width);
+                  int endTime = new DateTime.now().millisecondsSinceEpoch;
+                  print("Detection took ${endTime - startTime}");
 
-                    isDetecting = false;
-                  });
-                  lastTime = currentTime;
-                }
+                  widget.setRecognitions(recognitions, img.height, img.width);
+
+                  isDetecting = false;
+                });
+                lastTime = currentTime;
               }
             }
-        });
-
-
+          }
         });
       });
     }
@@ -150,12 +150,13 @@ class _CameraState extends State<Camera> {
   @override
   void didUpdateWidget(Camera oldWidget) {
     _detectModeOn = widget.detectModeOn;
+    _resolutionPreset = _getResolution(widget.resolution);
+    _framerate = widget.framerate;
     super.didUpdateWidget(oldWidget);
   }
 
-  Future<ResolutionPreset> _getResolution() async {
-    final prefs = await SharedPreferences.getInstance();
-    int res = prefs.getInt('resolution');
+  ResolutionPreset _getResolution(res) {
+    print('GET RESOLUTION: $res');
     switch (res) {
       case RES_LOW:
         return ResolutionPreset.low;
