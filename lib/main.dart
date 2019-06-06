@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:screen/screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:testapp/home.dart';
 
@@ -28,6 +29,7 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Screen.keepOn(true);
     return MaterialApp(
       theme: ThemeData.dark(),
       home: Home(cameras: cameras),

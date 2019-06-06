@@ -27,6 +27,7 @@ dependencies:
   native_device_orientation: ^0.2.0
 
   flutter_bluetooth_serial: ^0.0.4
+  screen: ^0.0.3
 
 dev_dependencies:
   flutter_test:
