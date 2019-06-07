@@ -14,10 +14,11 @@ class Camera extends StatefulWidget {
   final List<CameraDescription> cameras;
   final Callback setRecognitions;
   final bool detectModeOn;
+  final bool screenOn;
   final int resolution;
   final int framerate;
 
-  Camera(this.cameras, this.setRecognitions, this.detectModeOn, this.resolution, this.framerate);
+  Camera(this.cameras, this.setRecognitions, this.detectModeOn, this.screenOn, this.resolution, this.framerate);
 
   @override
   _CameraState createState() => _CameraState();
@@ -26,7 +27,8 @@ class Camera extends StatefulWidget {
 class _CameraState extends State<Camera> {
   CameraController controller;
   bool isDetecting = false;
-  bool _detectModeOn = true;
+  bool _detectModeOn = false;
+  bool _screenOn = false;
   int lastTime = new DateTime.now().millisecondsSinceEpoch;
   ResolutionPreset _resolutionPreset;
   int _framerate;
@@ -142,7 +144,7 @@ class _CameraState extends State<Camera> {
             maxWidth: screenRatio > previewRatio
                 ? screenH / previewH * previewW
                 : screenW,
-            child: CameraPreview(controller),
+            child: _screenOn ? CameraPreview(controller) : Container(),
           ));
     });
   }
@@ -150,6 +152,7 @@ class _CameraState extends State<Camera> {
   @override
   void didUpdateWidget(Camera oldWidget) {
     _detectModeOn = widget.detectModeOn;
+    _screenOn = widget.screenOn;
     _resolutionPreset = _getResolution(widget.resolution);
     _framerate = widget.framerate;
     super.didUpdateWidget(oldWidget);

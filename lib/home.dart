@@ -19,6 +19,7 @@ class _HomeState extends State<Home> {
 
   List<dynamic> _recognitions;
   bool _detectModeOn = false;
+  bool _screenOn = false;
 
   double _appBarHeight = AppBar().preferredSize.height;
 
@@ -36,7 +37,7 @@ class _HomeState extends State<Home> {
   FlutterBluetoothSerial _device;
 
   // Settings
-  int _resolution = 2;
+  int _resolution = 0;
   double _framerate = 1.0;
 
   setBluetooth(bluetoothConnected, device){
@@ -58,8 +59,14 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(title: Text('Object Detection'), actions: <Widget>[
         Switch(
+          inactiveThumbColor: Colors.red,
+          activeColor: Colors.red,
           value: _detectModeOn,
           onChanged: (value) => setState(() => _detectModeOn = value)
+        ),
+        Switch(
+          value: _screenOn,
+          onChanged: (value) => setState(() => _screenOn = value)
         ),
         IconButton(
           icon: Icon(Icons.settings),
@@ -75,7 +82,7 @@ class _HomeState extends State<Home> {
           },
         ),
       ]),
-      body: CameraStream(widget.cameras, _resolution, _framerate, setRecognitions, _detectModeOn, _appBarHeight),
+      body: CameraStream(widget.cameras, _resolution, _framerate, setRecognitions, _detectModeOn, _screenOn,_appBarHeight),
     );
   }
 }
