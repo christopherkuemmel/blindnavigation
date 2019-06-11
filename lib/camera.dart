@@ -75,7 +75,7 @@ class _CameraState extends State<Camera> {
                   imageWidth: img.width,
                   imageMean: 127.5,
                   imageStd: 127.5,
-                  numResultsPerClass: 1,
+                  numResultsPerClass: 3,
                   threshold: 0.4,
                 ).then((recognitions) {
                   print(recognitions);
@@ -214,7 +214,7 @@ class _CameraState extends State<Camera> {
                   imageWidth: img.width,
                   imageMean: 127.5,
                   imageStd: 127.5,
-                  numResultsPerClass: 1,
+                  numResultsPerClass: 3,
                   threshold: 0.4,
                   rotation: rotation,
                 ).then((recognitions) {
