@@ -22,7 +22,7 @@ class _SettingsState extends State<Settings> {
   double _framerate;
 
   @override
-  initState(){
+  initState() {
     super.initState();
     _resolution = widget.resolution;
     _framerate = widget.framerate;
@@ -45,65 +45,95 @@ class _SettingsState extends State<Settings> {
           title: Text('Settings'),
         ),
         body: Container(
-            padding: EdgeInsets.all(32.0),
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text('Resolution'),
-                      Radio(
-                        onChanged: (res) => handleResolutionChange(res),
-                        groupValue: _resolution,
-                        value: RES_LOW,
-                      ),
-                      Text('Low'),
-                      Radio(
-                        onChanged: (res) => handleResolutionChange(res),
-                        groupValue: _resolution,
-                        value: RES_MED,
-                      ),
-                      Text('Medium'),
-                      Radio(
-                        onChanged: (res) => handleResolutionChange(res),
-                        groupValue: _resolution,
-                        value: RES_HIGH,
-                      ),
-                      Text('High'),
-                    ],
-                  ),
+          padding: EdgeInsets.all(32.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Row(
+                  children: <Widget>[
+                    Text(
+                      "Resolution",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text("Framerate"),
-                      Flexible(
-                        flex: 1,
-                        child: Slider(
-                          activeColor: Colors.white,
-                          min: 1,
-                          max: 25,
-                          onChanged: (newRating) => setState(() => _framerate = newRating),
-                          value: _framerate,
-                        ),
-                      ),
-                      Container(
-                          width: 80.0,
-                          alignment: Alignment.center,
-                          child: Text((_framerate.floor()).toStringAsFixed(0) + " fps"))
-                    ],
-                  ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Column(
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Radio(
+                              onChanged: (res) => handleResolutionChange(res),
+                              groupValue: _resolution,
+                              value: RES_LOW,
+                            ),
+                            Text('Low'),
+                            Radio(
+                              onChanged: (res) => handleResolutionChange(res),
+                              groupValue: _resolution,
+                              value: RES_MED,
+                            ),
+                            Text('Medium'),
+                            Radio(
+                              onChanged: (res) => handleResolutionChange(res),
+                              groupValue: _resolution,
+                              value: RES_HIGH,
+                            ),
+                            Text('High'),
+                          ],
+                        )
+                      ],
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Row(
+                  children: <Widget>[
+                    Text(
+                      "Framerate",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Flexible(
+                      flex: 1,
+                      child: Slider(
+                        activeColor: Colors.white,
+                        min: 1,
+                        max: 25,
+                        onChanged: (newRating) =>
+                            setState(() => _framerate = newRating),
+                        value: _framerate,
+                      ),
+                    ),
+                    Container(
+                        width: 80.0,
+                        alignment: Alignment.center,
+                        child: Text(
+                            (_framerate.floor()).toStringAsFixed(0) + " fps"))
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
-

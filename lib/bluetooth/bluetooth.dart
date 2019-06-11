@@ -99,146 +99,147 @@ class _BluetoothState extends State<Bluetooth> {
         title: Text("Bluetooth"),
       ),
       body: Container(
-        padding: new EdgeInsets.all(32.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            Padding(
+        padding: new EdgeInsets.fromLTRB(32.0, 8.0, 32.0, 0),
+          child: ListView(
+            shrinkWrap: true,
+            // mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        "Paired Devices",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ],
+                  )),
+              Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text(
-                      "Paired Devices",
-                      style: TextStyle(fontSize: 20),
+                    // Text(
+                    //   'Device:',
+                    //   style: TextStyle(
+                    //     fontWeight: FontWeight.bold,
+                    //   ),
+                    // ),
+                    DropdownButton(
+                      items: _getDeviceItems(),
+                      // TODO: show already selected/connected device when reloading bluetooth widget
+                      onChanged: (value) => setState(() => _device = value),
+                      value: _device,
+                    ),
+                    RaisedButton(
+                      onPressed:
+                          _pressed ? null : _connected ? _disconnect : _connect,
+                      child: Text(_connected ? 'Disconnect' : 'Connect'),
                     ),
                   ],
-                )),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    'Device:',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  DropdownButton(
-                    items: _getDeviceItems(),
-                    // TODO: show already selected/connected device when reloading bluetooth widget
-                    onChanged: (value) => setState(() => _device = value),
-                    value: _device,
-                  ),
-                  RaisedButton(
-                    onPressed:
-                        _pressed ? null : _connected ? _disconnect : _connect,
-                    child: Text(_connected ? 'Disconnect' : 'Connect'),
-                  ),
-                ],
+                ),
               ),
-            ),
 
-            // TODO: single Modules
-            // Padding(
-            //   padding: const EdgeInsets.only(bottom: 8.0),
-            //   child: Row(
-            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //     children: <Widget>[
-            //       Text("Duration"),
-            //       Flexible(
-            //         flex: 1,
-            //         child: Slider(
-            //           activeColor: Colors.white,
-            //           min: 0.0,
-            //           max: 1.0,
-            //           onChanged: (newRating) {
-            //             setState(() => _durationSliderValue = newRating);
-            //           },
-            //           value: _durationSliderValue,
-            //         ),
-            //       ),
-            //       Container(
-            //         width: 80.0,
-            //         alignment: Alignment.center,
-            //         child: Text((_durationSliderValue*10000.floor()).toStringAsFixed(0) + " ms")
-            //       )
-            //     ],
-            //   ),
-            // ),
+              // TODO: single Modules
+              // Padding(
+              //   padding: const EdgeInsets.only(bottom: 8.0),
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //     children: <Widget>[
+              //       Text("Duration"),
+              //       Flexible(
+              //         flex: 1,
+              //         child: Slider(
+              //           activeColor: Colors.white,
+              //           min: 0.0,
+              //           max: 1.0,
+              //           onChanged: (newRating) {
+              //             setState(() => _durationSliderValue = newRating);
+              //           },
+              //           value: _durationSliderValue,
+              //         ),
+              //       ),
+              //       Container(
+              //         width: 80.0,
+              //         alignment: Alignment.center,
+              //         child: Text((_durationSliderValue*10000.floor()).toStringAsFixed(0) + " ms")
+              //       )
+              //     ],
+              //   ),
+              // ),
 
-            // Left & Right
-            Spacer(),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text("Duration"),
-                  Flexible(
-                    flex: 1,
-                    child: Slider(
-                      activeColor: Colors.white,
-                      min: 0.0,
-                      max: 1.0,
-                      onChanged: (newRating) {
-                        setState(() => _durationSliderValue = newRating);
-                      },
-                      value: _durationSliderValue,
+              // Left & Right
+              // Spacer(),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0, top: 80.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text("Duration"),
+                    Flexible(
+                      flex: 1,
+                      child: Slider(
+                        activeColor: Colors.white,
+                        min: 0.0,
+                        max: 1.0,
+                        onChanged: (newRating) {
+                          setState(() => _durationSliderValue = newRating);
+                        },
+                        value: _durationSliderValue,
+                      ),
                     ),
-                  ),
-                  Container(
-                      width: 80.0,
-                      alignment: Alignment.center,
-                      child: Text((_durationSliderValue * 10000.floor())
-                              .toStringAsFixed(0) +
-                          " ms"))
-                ],
+                    Container(
+                        width: 80.0,
+                        alignment: Alignment.center,
+                        child: Text((_durationSliderValue * 10000.floor())
+                                .toStringAsFixed(0) +
+                            " ms"))
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 32.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text("Intensity"),
-                  Flexible(
-                    flex: 1,
-                    child: Slider(
-                      activeColor: Colors.white,
-                      min: 0.0,
-                      max: 1.0,
-                      onChanged: (newRating) {
-                        setState(() => _intensitySliderValue = newRating);
-                      },
-                      value: _intensitySliderValue,
+              Padding(
+                padding: const EdgeInsets.only(bottom: 32.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text("Intensity"),
+                    Flexible(
+                      flex: 1,
+                      child: Slider(
+                        activeColor: Colors.white,
+                        min: 0.0,
+                        max: 1.0,
+                        onChanged: (newRating) {
+                          setState(() => _intensitySliderValue = newRating);
+                        },
+                        value: _intensitySliderValue,
+                      ),
                     ),
-                  ),
-                  Container(
-                      width: 80.0,
-                      alignment: Alignment.center,
-                      child: Text(_intensitySliderValue.toStringAsFixed(2)))
-                ],
+                    Container(
+                        width: 80.0,
+                        alignment: Alignment.center,
+                        child: Text(_intensitySliderValue.toStringAsFixed(2)))
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  RaisedButton(
-                    child: Text("LEFT"),
-                    onPressed: _sendLeftRequest,
-                  ),
-                  RaisedButton(
-                    child: Text("RIGHT"),
-                    onPressed: _sendRightRequest,
-                  ),
-                ],
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    RaisedButton(
+                      child: Text("LEFT"),
+                      onPressed: _sendLeftRequest,
+                    ),
+                    RaisedButton(
+                      child: Text("RIGHT"),
+                      onPressed: _sendRightRequest,
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
       ),
     );
   }
