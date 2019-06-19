@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:testapp/bluetooth/vibrotac/vibrotac.dart';
 
-typedef void Callback(bool bluetoothConnected, FlutterBluetoothSerial device);
+typedef void Callback(bool bluetoothConnected, FlutterBluetoothSerial device, double recognitionThreshold, double landscapeCutOff);
 
 class Bluetooth extends StatefulWidget {
   final Callback setBluetooth;
@@ -24,9 +24,10 @@ class _BluetoothState extends State<Bluetooth> {
   BluetoothDevice _device;
   bool _connected = false;
   bool _pressed = false;
-
   double _intensitySliderValue = 1.0;
   double _durationSliderValue = 0.1;
+  double _recognitionThresholdSliderValue = 0.5;
+  double _landscapeCutOff = 0.15;
 
   @override
   void initState() {
@@ -70,7 +71,7 @@ class _BluetoothState extends State<Bluetooth> {
             _connected = false;
             _pressed = false;
           });
-          widget.setBluetooth(false, null);
+          widget.setBluetooth(_connected, null, _recognitionThresholdSliderValue, _landscapeCutOff);
           break;
 
         default:
@@ -100,146 +101,198 @@ class _BluetoothState extends State<Bluetooth> {
       ),
       body: Container(
         padding: new EdgeInsets.fromLTRB(32.0, 8.0, 32.0, 0),
-          child: ListView(
-            shrinkWrap: true,
-            // mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Row(
-                    children: <Widget>[
-                      Text(
-                        "Paired Devices",
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ],
-                  )),
-              Padding(
+        child: ListView(
+          shrinkWrap: true,
+          // mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    // Text(
-                    //   'Device:',
-                    //   style: TextStyle(
-                    //     fontWeight: FontWeight.bold,
-                    //   ),
-                    // ),
-                    DropdownButton(
-                      items: _getDeviceItems(),
-                      // TODO: show already selected/connected device when reloading bluetooth widget
-                      onChanged: (value) => setState(() => _device = value),
-                      value: _device,
-                    ),
-                    RaisedButton(
-                      onPressed:
-                          _pressed ? null : _connected ? _disconnect : _connect,
-                      child: Text(_connected ? 'Disconnect' : 'Connect'),
+                    Text(
+                      "Paired Devices",
+                      style: TextStyle(fontSize: 20),
                     ),
                   ],
-                ),
+                )),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  // Text(
+                  //   'Device:',
+                  //   style: TextStyle(
+                  //     fontWeight: FontWeight.bold,
+                  //   ),
+                  // ),
+                  DropdownButton(
+                    items: _getDeviceItems(),
+                    // TODO: show already selected/connected device when reloading bluetooth widget
+                    onChanged: (value) => setState(() => _device = value),
+                    value: _device,
+                  ),
+                  RaisedButton(
+                    onPressed:
+                        _pressed ? null : _connected ? _disconnect : _connect,
+                    child: Text(_connected ? 'Disconnect' : 'Connect'),
+                  ),
+                ],
               ),
+            ),
 
-              // TODO: single Modules
-              // Padding(
-              //   padding: const EdgeInsets.only(bottom: 8.0),
-              //   child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //     children: <Widget>[
-              //       Text("Duration"),
-              //       Flexible(
-              //         flex: 1,
-              //         child: Slider(
-              //           activeColor: Colors.white,
-              //           min: 0.0,
-              //           max: 1.0,
-              //           onChanged: (newRating) {
-              //             setState(() => _durationSliderValue = newRating);
-              //           },
-              //           value: _durationSliderValue,
-              //         ),
-              //       ),
-              //       Container(
-              //         width: 80.0,
-              //         alignment: Alignment.center,
-              //         child: Text((_durationSliderValue*10000.floor()).toStringAsFixed(0) + " ms")
-              //       )
-              //     ],
-              //   ),
-              // ),
+            // TODO: single Modules
+            // Padding(
+            //   padding: const EdgeInsets.only(bottom: 8.0),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: <Widget>[
+            //       Text("Duration"),
+            //       Flexible(
+            //         flex: 1,
+            //         child: Slider(
+            //           activeColor: Colors.white,
+            //           min: 0.0,
+            //           max: 1.0,
+            //           onChanged: (newRating) {
+            //             setState(() => _durationSliderValue = newRating);
+            //           },
+            //           value: _durationSliderValue,
+            //         ),
+            //       ),
+            //       Container(
+            //         width: 80.0,
+            //         alignment: Alignment.center,
+            //         child: Text((_durationSliderValue*10000.floor()).toStringAsFixed(0) + " ms")
+            //       )
+            //     ],
+            //   ),
+            // ),
 
-              // Left & Right
-              // Spacer(),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0, top: 80.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text("Duration"),
-                    Flexible(
-                      flex: 1,
-                      child: Slider(
-                        activeColor: Colors.white,
-                        min: 0.0,
-                        max: 1.0,
-                        onChanged: (newRating) {
-                          setState(() => _durationSliderValue = newRating);
-                        },
-                        value: _durationSliderValue,
-                      ),
+            Padding(
+              padding: const EdgeInsets.only(top: 80.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text("Min Object Size"),
+                  Flexible(
+                    flex: 1,
+                    child: Slider(
+                      activeColor: Colors.white,
+                      min: 0.0,
+                      max: 1.0,
+                      onChanged: (newRating) {
+                        setState(() => _recognitionThresholdSliderValue = newRating);
+                        widget.setBluetooth(_connected, bluetooth, _recognitionThresholdSliderValue, _landscapeCutOff);
+                      },
+                      value: _recognitionThresholdSliderValue,
                     ),
-                    Container(
-                        width: 80.0,
-                        alignment: Alignment.center,
-                        child: Text((_durationSliderValue * 10000.floor())
-                                .toStringAsFixed(0) +
-                            " ms"))
-                  ],
-                ),
+                  ),
+                  Container(
+                      width: 80.0,
+                      alignment: Alignment.center,
+                      child: Text(_recognitionThresholdSliderValue.toStringAsFixed(2)))
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 32.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text("Intensity"),
-                    Flexible(
-                      flex: 1,
-                      child: Slider(
-                        activeColor: Colors.white,
-                        min: 0.0,
-                        max: 1.0,
-                        onChanged: (newRating) {
-                          setState(() => _intensitySliderValue = newRating);
-                        },
-                        value: _intensitySliderValue,
-                      ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text("Landscape cut-off"),
+                  Flexible(
+                    flex: 1,
+                    child: Slider(
+                      activeColor: Colors.white,
+                      min: 0.0,
+                      max: 0.5,
+                      onChanged: (newRating) {
+                        setState(() => _landscapeCutOff = newRating);
+                        widget.setBluetooth(_connected, bluetooth, _recognitionThresholdSliderValue, _landscapeCutOff);
+                      },
+                      value: _landscapeCutOff,
                     ),
-                    Container(
-                        width: 80.0,
-                        alignment: Alignment.center,
-                        child: Text(_intensitySliderValue.toStringAsFixed(2)))
-                  ],
-                ),
+                  ),
+                  Container(
+                      width: 80.0,
+                      alignment: Alignment.center,
+                      child: Text((_landscapeCutOff * 2).toStringAsFixed(2)))
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    RaisedButton(
-                      child: Text("LEFT"),
-                      onPressed: _sendLeftRequest,
+            ),
+
+            // Left & Right
+            Padding(
+              padding: const EdgeInsets.only(top: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text("Duration"),
+                  Flexible(
+                    flex: 1,
+                    child: Slider(
+                      activeColor: Colors.white,
+                      min: 0.0,
+                      max: 1.0,
+                      onChanged: (newRating) {
+                        setState(() => _durationSliderValue = newRating);
+                      },
+                      value: _durationSliderValue,
                     ),
-                    RaisedButton(
-                      child: Text("RIGHT"),
-                      onPressed: _sendRightRequest,
-                    ),
-                  ],
-                ),
+                  ),
+                  Container(
+                      width: 80.0,
+                      alignment: Alignment.center,
+                      child: Text((_durationSliderValue * 10000.floor())
+                              .toStringAsFixed(0) +
+                          " ms"))
+                ],
               ),
-            ],
-          ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0, bottom: 32.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text("Intensity"),
+                  Flexible(
+                    flex: 1,
+                    child: Slider(
+                      activeColor: Colors.white,
+                      min: 0.0,
+                      max: 1.0,
+                      onChanged: (newRating) {
+                        setState(() => _intensitySliderValue = newRating);
+                      },
+                      value: _intensitySliderValue,
+                    ),
+                  ),
+                  Container(
+                      width: 80.0,
+                      alignment: Alignment.center,
+                      child: Text(_intensitySliderValue.toStringAsFixed(2)))
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  RaisedButton(
+                    child: Text("LEFT"),
+                    onPressed: _sendLeftRequest,
+                  ),
+                  RaisedButton(
+                    child: Text("RIGHT"),
+                    onPressed: _sendRightRequest,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -276,7 +329,7 @@ class _BluetoothState extends State<Bluetooth> {
             setState(() => _pressed = false);
           });
           setState(() => _pressed = true);
-          widget.setBluetooth(true, bluetooth);
+          widget.setBluetooth(true, bluetooth, _recognitionThresholdSliderValue, _landscapeCutOff);
         }
       });
     }
@@ -286,7 +339,7 @@ class _BluetoothState extends State<Bluetooth> {
   void _disconnect() {
     bluetooth.disconnect();
     setState(() => _pressed = true);
-    widget.setBluetooth(false, null);
+    widget.setBluetooth(false, null, _recognitionThresholdSliderValue, _landscapeCutOff);
   }
 
   void _sendLeftRequest() {

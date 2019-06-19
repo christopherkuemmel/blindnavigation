@@ -8,9 +8,8 @@ class RecognitionHeuristic {
   final List<String> classes = ["chair", "cup"];
   final double detectionProb = 0.4;
 
-  void sendRequestBasedOnRecognitions(List recognitions, FlutterBluetoothSerial device) {
+  void sendRequestBasedOnRecognitions(List recognitions, FlutterBluetoothSerial device, double minObjectSize, double landscapeCutOff) {
     int duration = 1000;
-    double recognitionThreshold = 0.5;
 
     double intensity = 0.0;
     double highestIntensity = 0.0;
@@ -35,7 +34,8 @@ class RecognitionHeuristic {
 
     filteredPredictions.forEach((prediction) => {
           intensity = max(prediction["rect"]["w"], prediction["rect"]["h"]),
-          intensity = intensity / 2,
+          // intensity = 0.4 * intensity + 0.2, // f(x)=0,4x+0,2  -> mapping from 0,2 to 0,6
+          intensity = intensity - 0.3, // f(x)=0,4x+0,2  -> mapping from 0,2 to 0,6 
           if (intensity > highestIntensity)
             {
               highestIntensity = intensity,
@@ -43,11 +43,11 @@ class RecognitionHeuristic {
             }
         });
 
-    if (largestPrediction != null && largestPrediction["rect"]["h"] >= recognitionThreshold) {
-      if (largestPrediction["rect"]["x"] + (largestPrediction["rect"]["w"] / 2) > 0.5) {
+    if (largestPrediction != null && largestPrediction["rect"]["h"] >= minObjectSize) {
+      if (largestPrediction["rect"]["x"] + (largestPrediction["rect"]["w"] / 2) > 0.5 && largestPrediction["rect"]["x"] + (largestPrediction["rect"]["w"] / 2) < 1.0 - landscapeCutOff) {
         Vibrotac().sendRightRequest(highestIntensity, duration, device);
         print("Right with center x=${largestPrediction["rect"]["x"] + (largestPrediction["rect"]["w"] / 2)}");
-      } else {
+      } else if (largestPrediction["rect"]["x"] + (largestPrediction["rect"]["w"] / 2) > landscapeCutOff){
         Vibrotac().sendLeftRequest(highestIntensity, duration, device);
         print("Left with center x=${largestPrediction["rect"]["x"] + (largestPrediction["rect"]["w"] / 2)}");
       }

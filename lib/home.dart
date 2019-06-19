@@ -29,21 +29,25 @@ class _HomeState extends State<Home> {
       // _imageHeight = imageHeight;
       // _imageWidth = imageWidth;
     });
-    if (_device != null) RecognitionHeuristic().sendRequestBasedOnRecognitions(_recognitions, _device);
+    if (_device != null) RecognitionHeuristic().sendRequestBasedOnRecognitions(_recognitions, _device, _recognitionThreshold, _landscapeCutOff);
   }
 
   // Bluetooth State
   bool _bluetoothConnected = false;
   FlutterBluetoothSerial _device;
+  double _recognitionThreshold;
+  double _landscapeCutOff;
 
   // Settings
   int _resolution = 0;
   double _framerate = 1.0;
 
-  setBluetooth(bluetoothConnected, device){
+  setBluetooth(bluetoothConnected, device, recognitionThreshold, landscapeCutOff){
     setState(() {
       _bluetoothConnected = bluetoothConnected;
       _device = device;
+      _recognitionThreshold = recognitionThreshold;
+      _landscapeCutOff = landscapeCutOff;
     });
   }
 
@@ -82,7 +86,7 @@ class _HomeState extends State<Home> {
           },
         ),
       ]),
-      body: CameraStream(widget.cameras, _resolution, _framerate, setRecognitions, _detectModeOn, _screenOn,_appBarHeight),
+      body: CameraStream(widget.cameras, _resolution, _framerate, setRecognitions, _detectModeOn, _screenOn, _appBarHeight),
     );
   }
 }

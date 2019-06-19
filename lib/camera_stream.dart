@@ -17,7 +17,7 @@ class CameraStream extends StatefulWidget {
   final bool screenOn;
   final double appBarHeight;
 
-  CameraStream(this.cameras,this.resolution, this.framerate, this.setRecognitions, this.detectModeOn, this.screenOn, this.appBarHeight);
+  CameraStream(this.cameras, this.resolution, this.framerate, this.setRecognitions, this.detectModeOn, this.screenOn, this.appBarHeight);
 
   @override
   _CameraStreamState createState() => _CameraStreamState();
